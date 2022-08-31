@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import DataCache
 
 protocol cuentaProtocol{
     func mostrarDatos(cuenta: [Cuenta])
@@ -46,6 +47,10 @@ struct BankManager {
             
             guard let data = data, error == nil else { return }
             
+            // MARK: - **** Guardar Cache *****
+            DataCache.instance.write(data: data, forKey: "dataMovimientos")
+            print("DEBUG: Movments Guardados en Cache")
+            
             do {
                 let movimientos = try JSONDecoder().decode(MovimientosResponse.self, from: data)
                 datosMovimientos = movimientos.movimientos
@@ -64,6 +69,10 @@ struct BankManager {
         let task = URLSession.shared.dataTask(with: url) { data, _, error in
             
             guard let data = data, error == nil else { return }
+            
+            // MARK: - **** Guardar Cache *****
+            DataCache.instance.write(data: data, forKey: "dataTarjeta")
+            print("DEBUG: Tarjetas Guardado en Cache")
             
             do {
                 let tarjetas = try JSONDecoder().decode(TarjetasResponse.self, from: data)
@@ -84,6 +93,10 @@ struct BankManager {
             
             guard let data = data, error == nil else { return }
             
+            // MARK: - **** Guardar Cache *****
+            DataCache.instance.write(data: data, forKey: "dataSaldos")
+            print("DEBUG: Saldos Guardado en Cache")
+            
             do {
                 let saldos = try JSONDecoder().decode(SaldosResponse.self, from: data)
                 datosSaldos = saldos.saldos
@@ -101,6 +114,10 @@ struct BankManager {
         let task = URLSession.shared.dataTask(with: url) { data, _, error in
             
             guard let data = data, error == nil else { return }
+            
+            // MARK: - **** Guardar Cache *****
+            DataCache.instance.write(data: data, forKey: "dataCuenta")
+            print("DEBUG: Cuenta Guardado en Cache")
             
             do {
                 let cuenta = try JSONDecoder().decode(CuentaResponse.self, from: data)

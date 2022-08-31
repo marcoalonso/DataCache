@@ -1,16 +1,20 @@
 PODS:
+  - DataCache (1.6.0)
   - IQKeyboardManagerSwift (6.5.10)
 
 DEPENDENCIES:
+  - DataCache
   - IQKeyboardManagerSwift
 
 SPEC REPOS:
   trunk:
+    - DataCache
     - IQKeyboardManagerSwift
 
 SPEC CHECKSUMS:
+  DataCache: 5f24b356848a37469dbebec89c28ca88b4ef9294
   IQKeyboardManagerSwift: 52962c76ab33532f15ad9f3ff4e5715eda5335bb
 
-PODFILE CHECKSUM: bfaf757e6765dc734ad8a87742928bd27fc1d1ea
+PODFILE CHECKSUM: 7d59ab4d73f2bf6f90791884b6121d9a95ae4254
 
 COCOAPODS: 1.11.3

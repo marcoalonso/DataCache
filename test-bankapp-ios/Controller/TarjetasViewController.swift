@@ -4,8 +4,8 @@
 //
 //  Created by marco rodriguez on 10/08/22.
 //
-
 import UIKit
+import DataCache
 
 class TarjetasViewController: UIViewController {
     @IBOutlet weak var MisCuentasButton: UIButton!
@@ -31,25 +31,85 @@ class TarjetasViewController: UIViewController {
         super.viewDidLoad()
         
         delegados()
+        
+        validaCache()
        
         configureUI()
         
     }
     
+    func validaCache(){
+        //cuenta
+        if let dataCache = DataCache.instance.readData(forKey: "dataCuenta") {
+            print("DEBUG: Se leyo cuenta de cache y se creó: \(dataCache)")
+            
+            let decodificador = JSONDecoder()
+            
+            if let listaElementos = try? decodificador.decode(CuentaResponse.self, from: dataCache){
+                //print("DEBUG: La cuenta recuperada de cache es: \(listaElementos.cuenta) ")
+                self.nombreUsuarioLabel.text = listaElementos.cuenta[0].nombre
+                self.ultimoInicioLabel.text =  listaElementos.cuenta[0].ultimaSesion
+            }
+        } else {
+            print("DEBUG: No hay caché por lo que se va consultar la API ")
+            bankManager.getCuentaInfo(endPoint: Endpoints.urlCuenta)
+        }
+        
+        //Saldos
+        if let dataCache = DataCache.instance.readData(forKey: "dataSaldos") {
+            print("DEBUG: Se leyo saldos de cache y se creó: \(dataCache)")
+            
+            let decodificador = JSONDecoder()
+            
+            if let listaElementos = try? decodificador.decode(SaldosResponse.self, from: dataCache){
+                //print("DEBUG: Los Saldos recuperada de cache son: \(listaElementos.saldos) ")
+                saldos = listaElementos.saldos
+            }
+        } else {
+            print("DEBUG: No hay caché por lo que se va consultar la API ")
+            bankManager.getSaldos(endPoint: Endpoints.urlSaldos)
+        }
+        
+        //Movimientos
+        if let dataCache = DataCache.instance.readData(forKey: "dataMovimientos") {
+            print("DEBUG: Se leyo Movimientos de cache y se creó: \(dataCache)")
+            
+            let decodificador = JSONDecoder()
+            
+            if let listaElementos = try? decodificador.decode(MovimientosResponse.self, from: dataCache){
+               // print("DEBUG: Movimientos recuperada de cache es: \(listaElementos.movimientos) ")
+                movimientos = listaElementos.movimientos
+            }
+        } else {
+            print("DEBUG: No hay caché por lo que se va consultar la API ")
+            bankManager.getMovimientos(endPoint: Endpoints.urlMovimientos)
+        }
+        
+        //tarjetas
+        if let dataCache = DataCache.instance.readData(forKey: "dataTarjeta") {
+            print("DEBUG: Se leyo tarjetas de cache y se creó: \(dataCache)")
+            
+            let decodificador = JSONDecoder()
+            
+            if let listaElementos = try? decodificador.decode(TarjetasResponse.self, from: dataCache){
+                //print("DEBUG: Las tarjetas recuperadas de cache es: \(listaElementos.tarjetas) ")
+                tarjetas = listaElementos.tarjetas
+            }
+        } else {
+            print("DEBUG: No hay caché por lo que se va consultar la API ")
+            bankManager.getTarjetas(endPoint: Endpoints.urlTarjetas)
+        }
+        
+    }
+    
+    
   
     
     func delegados(){
         bankManager.delegadoCuenta = self
-        bankManager.getCuentaInfo(endPoint: Endpoints.urlCuenta)
-        
         bankManager.delegadoSaldos = self
-        bankManager.getSaldos(endPoint: Endpoints.urlSaldos)
-        
         bankManager.delegadoTarjetas = self
-        bankManager.getTarjetas(endPoint: Endpoints.urlTarjetas)
-        
         bankManager.delegadoMovimientos = self
-        bankManager.getMovimientos(endPoint: Endpoints.urlMovimientos)
         
         tablaTarjetas.delegate = self
         tablaTarjetas.dataSource = self

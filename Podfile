@@ -7,5 +7,5 @@ target 'test-bankapp-ios' do
 
   # Pods for test-bankapp-ios
 pod 'IQKeyboardManagerSwift'
-
+pod 'DataCache'
 end
